@@ -1,5 +1,3 @@
-iptables -t nat -A POSTROUTING -s 10.16.0.0/21 -o eth0 -j SNAT --to-source 192.$
-
 apt-get update
 apt-get install nano
 apt-get install isc-dhcp-relay -y
@@ -27,10 +25,8 @@ echo '
 SERVERS="10.16.4.131"
 
 # On what interfaces should the DHCP relay (dhrelay) serve DHCP requests?
-INTERFACES="eth1 eth2"
+INTERFACES="eth0 eth1 eth2"
 
 # Additional options that are passed to the DHCP relay daemon?
 OPTIONS=""
 ' > /etc/default/isc-dhcp-relay
-
-service isc-dhcp-relay restart
