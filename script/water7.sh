@@ -24,3 +24,5 @@ OPTIONS=""
 ' > /etc/default/isc-dhcp-relay
 
 service isc-dhcp-relay restart
+
+iptables -A FORWARD -d 10.16.4.128/29 -p tcp --dport 80 -j DROP
