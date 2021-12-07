@@ -223,3 +223,5 @@ subnet 10.16.9.0 netmask 255.255.255.248 {
 ' >  /etc/dhcp/dhcpd.conf
 
 service isc-dhcp-server restart
+
+iptables -A INPUT -p icmp -m connlimit --connlimit-above 3 --connlimit-mask 0 -j DROP
