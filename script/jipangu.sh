@@ -13,14 +13,14 @@ echo '
 # This is a POSIX shell fragment
 #
 
-# Path to dhcpd's config file (default: /etc/dhcp/dhcpd.conf).
+# Path to dhcpds config file (default: /etc/dhcp/dhcpd.conf).
 #DHCPD_CONF=/etc/dhcp/dhcpd.conf
 
-# Path to dhcpd's PID file (default: /var/run/dhcpd.pid).
+# Path to dhcpds PID file (default: /var/run/dhcpd.pid).
 #DHCPD_PID=/var/run/dhcpd.pid
 
 # Additional options to start dhcpd with.
-#       Don't use options -cf or -pf here; use DHCPD_CONF/ DHCPD_PID instead
+#       Dont use options -cf or -pf here; use DHCPD_CONF/ DHCPD_PID instead
 #OPTIONS=
 
 # On what interfaces should the DHCP server (dhcpd) serve DHCP requests?
@@ -37,21 +37,22 @@ echo '
 # This is a POSIX shell fragment
 #
 
-# Path to dhcpd's config file (default: /etc/dhcp/dhcpd.conf).
+# Path to dhcpds config file (default: /etc/dhcp/dhcpd.conf).
 #DHCPD_CONF=/etc/dhcp/dhcpd.conf
 
-# Path to dhcpd's PID file (default: /var/run/dhcpd.pid).
+# Path to dhcpds PID file (default: /var/run/dhcpd.pid).
 #DHCPD_PID=/var/run/dhcpd.pid
 
 # Additional options to start dhcpd with.
-#       Don't use options -cf or -pf here; use DHCPD_CONF/ DHCPD_PID instead
+#       Dont use options -cf or -pf here; use DHCPD_CONF/ DHCPD_PID instead
 #OPTIONS=
 
 # On what interfaces should the DHCP server (dhcpd) serve DHCP requests?
 #       Separate multiple interfaces with spaces, e.g. eth0 eth1.
 INTERFACES="eth0"
-root@JIPANGU:~# nano script.sh
-root@JIPANGU:~# cat /etc/dhcp/dhcpd.conf
+' > /etc/default/isc-dhcp-server
+
+echo '
 #
 # Sample configuration file for ISC dhcpd for Debian
 #
