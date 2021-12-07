@@ -3,6 +3,7 @@ echo nameserver 192.168.122.1 > /etc/resolv.conf
 apt-get update
 apt-get install nano
 apt-get install isc-dhcp-server -y
+apt-get install netcat -y
 
 echo '
 # Defaults for isc-dhcp-server initscript
@@ -225,3 +226,5 @@ subnet 10.16.9.0 netmask 255.255.255.248 {
 service isc-dhcp-server restart
 
 iptables -A INPUT -p icmp -m connlimit --connlimit-above 3 --connlimit-mask 0 -j DROP
+
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT

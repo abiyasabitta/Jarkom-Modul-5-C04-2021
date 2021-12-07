@@ -1,6 +1,9 @@
+iptables -t nat -A POSTROUTING -s 10.16.0.0/20 -o eth0 -j SNAT --to-source 192.168.122.248
+
 apt-get update
 apt-get install nano
 apt-get install isc-dhcp-relay -y
+apt-get install netcat -y
 
 ################ Routing sayap kiri ##############
 route add -net 10.16.4.0 netmask 255.255.255.128 gw 10.16.5.2

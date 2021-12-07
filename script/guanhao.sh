@@ -23,4 +23,10 @@ INTERFACES="eth0 eth1 eth2 eth3"
 OPTIONS=""
 ' > /etc/default/isc-dhcp-relay
 
+#6
+iptables -A PREROUTING -t nat -p tcp -d 10.16.4.128/29 --dport 80 -m statistic --mode nth --every 2 --packet 0 -j DNAT --to-destination  10.16.9.2:80
+iptables -A PREROUTING -t nat -p tcp -d 10.16.4.128/29 --dport 80 -j DNAT --to-destination 10.16.9.3:80
+iptables -t nat -A POSTROUTING -p tcp -d 10.16.9.2 --dport 80 -j SNAT --to-source 10.16.4.128:80
+iptables -t nat -A POSTROUTING -p tcp -d 10.16.9.3 --dport 80 -j SNAT --to-source 10.16.4.128:80
+
 service isc-dhcp-relay restart
