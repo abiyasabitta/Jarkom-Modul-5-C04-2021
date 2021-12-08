@@ -1,4 +1,4 @@
-iptables -t nat -A POSTROUTING -s 10.16.0.0/20 -o eth0 -j SNAT --to-source 192.168.122.248
+iptables -t nat -A POSTROUTING -s 10.16.0.0/20 -o eth0 -j SNAT --to-source 192.168.122.177
 
 apt-get update
 apt-get install nano
