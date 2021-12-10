@@ -50,8 +50,50 @@ Luffy berterima kasih pada kalian karena telah membantunya. Luffy juga mengingat
 ## No 2
 
 ## No 3
+Pada soal nomor 3 diminta untuk membatasi akses ke dhcp dan dns server dengan maksimal 3 koneksi ICMP. maka dari itu digunakan IP TABLES pada doriki dan jipangu seperti berikut.
+```bash
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -p icmp -m connlimit --connlimit-above 3 --connlimit-mask 0 -j DROP
+```
+Keterangan:
+-A INPUT: Menggunakan chain INPUT
+
+-p icmp: Mendefinisikan protokol yang digunakan, yaitu ICMP (ping)
+
+-m connlimit: Menggunakan rule connection limit
+
+--connlimit-above 3: Limit yang ditangkap paket adalah di atas 3
+
+--connlimit-mask 0 : Hanya memperbolehkan 3 koneksi setiap subnet dalam satu waktu
+
+-j DROP: Paket di-drop
+
+Untuk testing maka dilakukan ping ke doriki atau jipangu melalui 4 node, dan nantinya pada node ke 4 tidak bisa melakukan koneksi ping.
+
 
 ## No 4
+Pada nomor ini diminta untuk node blueno dan chiper hanya bisa mengakses doriki pada pukul 7.00 - 15.00, pada hari Senin hingga Kamis. Maka dari itu digunakan IP TABLES pada doriki seperti berikut
+```bash
+#Blueno
+iptables -A INPUT -s 10.16.4.0/25 -m time --timestart 07:00 --timestop 15:00 --weekdays Mon,Tue,Wed,Thu -j ACCEPT
+iptables -A INPUT -s 10.16.4.0/25 -j REJECT
+#Chiper
+iptables -A INPUT -s 10.16.0.0/22 -m time --timestart 07:00 --timestop 15:00 --weekdays Mon,Tue,Wed,Thu -j ACCEPT
+iptables -A INPUT -s 10.16.0.0/22 -j REJECT
+```
+Keterangan:
+-A INPUT : menggunakan CHAIN INPUT
+-s 10.16.4.0 : mendefinisikan alamat asal (BLUENO)
+-s 10.16.0.0 : mendefinisikan alamat asal (Chiper)
+-m time : menggunakan rule time
+--timestart 07:00 : mendefinisikan waktu mulai
+--timestop 15:00 : mendefinisikan waktu berhenti
+--weekdays Mon,Tue,Wed,Thu : mendefinisikan hari yaitu Senin hingga Kamis
+--j ACCEPT : Paket di-Accept
+--j Reject : Paket di-Reject
+
+Untuk testing yaitu menset waktu pada node terlebih dahulu kemudian dilakukan ping ke doriki
+
 
 ## No 5
 Diminta untuk membatasi akses yang menuju ke Doriki yang berasal dari Elena dan Fukurou agar hanya dapat mengakses pukul 15.01 hingga pukul 06.59 di setiap harinya
