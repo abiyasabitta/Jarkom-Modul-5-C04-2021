@@ -21,6 +21,7 @@ iptables -A INPUT -s 10.16.8.0/24 -m time --timestart 00:00 --timestop 06:59 -j 
 iptables -A INPUT -s 10.16.12.0/23 -j REJECT
 iptables -A INPUT -s 10.16.8.0/24 -j REJECT
 
+#6
 iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
 echo '

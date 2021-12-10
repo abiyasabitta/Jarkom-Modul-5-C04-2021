@@ -54,5 +54,89 @@ Luffy berterima kasih pada kalian karena telah membantunya. Luffy juga mengingat
 ## No 4
 
 ## No 5
+Diminta untuk membatasi akses yang menuju ke Doriki yang berasal dari Elena dan Fukurou agar hanya dapat mengakses pukul 15.01 hingga pukul 06.59 di setiap harinya
+
+Maka, perlu untuk mengatur iptables yang berasal dari Elena (10.16.12.0/23) dan Fukurou (10.16.8.0/24) dengan iptables berikut 
+```
+iptables -A INPUT -s 10.16.12.0/23 -m time --timestart 15:01 --timestop 23:59 -j ACCEPT
+iptables -A INPUT -s 10.16.12.0/23 -m time --timestart 00:00 --timestop 06:59 -j ACCEPT
+iptables -A INPUT -s 10.16.8.0/24 -m time --timestart 15:01 --timestop 23:59 -j ACCEPT
+iptables -A INPUT -s 10.16.8.0/24 -m time --timestart 00:00 --timestop 06:59 -j ACCEPT
+iptables -A INPUT -s 10.16.12.0/23 -j REJECT
+iptables -A INPUT -s 10.16.8.0/24 -j REJECT
+```
+
+Iptables tersebut menerima packet sesuai dengan waktu yang ditentukan soal, dan menolak packet yang diluar jam tersebut
+
+![5](img/5.jpg)
 
 ## No 6
+Diminta untuk menyetting Guanhao agar setiap request dari client yang mengakses DNS Server akan didistribusikan secara bergantian pada Jorge dan Maingate.
+
+Sebelum menyetting Guanhao, kita harus melakukan setting DNS Servernya terlebih dahulu, yaitu Doriki. 
+
+Ubah file `/etc/bind/named.conf.local` menjadi seperti berikut 
+```
+//
+// Do any local configuration here
+//
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
+
+zone "jarkomC04.com" {
+        type master;
+        file "/etc/bind/jarkom/jarkomC04.com";
+};
+```
+
+Lalu buat direktori dengan nama `/etc/bind/jarkom` menggunakan `mkdir /etc/bind/jarkom`. Kemudian buat salinan dari `/etc/bind/db.local` ke `/etc/bind/jarkom` dengan nama jarkomC04.com menggunakan command `cp /etc/bind/db.local /etc/bind/jarkom/jarkomC04.com`. Kemudian edit file tersebut sehingga seperti berikut
+```
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     jarkomC04.com. root.jarkomC04.com. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      jarkomC04.com.
+@       IN      A       10.16.4.128
+```
+
+Lalu restart atau start bind9 untuk menjalankan server dengan command `service bind9 restart`
+
+Kemudian setting iptables pada Guanhao untuk membuat setiap request yang dikirimkan ke DNS Server akan dibagi ke Jorge dan Maingate
+```
+iptables -A PREROUTING -t nat -p tcp -d 10.16.4.128/29 --dport 80 -m statistic --mode nth --every 2 --packet 0 -j DNAT --to-destination  10.16.9.2:80
+iptables -A PREROUTING -t nat -p tcp -d 10.16.4.128/29 --dport 80 -j DNAT --to-destination 10.16.9.3:80
+iptables -t nat -A POSTROUTING -p tcp -d 10.16.9.2 --dport 80 -j SNAT --to-source 10.16.4.128:80
+iptables -t nat -A POSTROUTING -p tcp -d 10.16.9.3 --dport 80 -j SNAT --to-source 10.16.4.128:80
+```
+
+Pada kode 
+```
+iptables -A PREROUTING -t nat -p tcp -d 10.16.4.128/29 --dport 80 -m statistic --mode nth --every 2 --packet 0 -j DNAT --to-destination  10.16.9.2:80
+iptables -A PREROUTING -t nat -p tcp -d 10.16.4.128/29 --dport 80 -j DNAT --to-destination 10.16.9.3:80
+```
+setiap paket yang menuju destionation `-d` dari DNS Server (10.16.4.128/29) dan dengan port `80` kemudian dialihkan ke Jorge (10.16.9.2:80) dan Maingate (10.16.9.3:80)
+
+Kemudian paket tersebut dialihkan kembali ke DNS Server menggunakan 2 iptables setelahnya.
+
+Lalu langkah terakhir setting lagi Doriki sebagai DNS Server agara dapat menerima paket yg dikirimkan oleh client menggunakan iptables `iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT`
+
+ESTABLISHED berarti paket yang dikirimkan sudah diterima dan dikenali di client dan server. RELATED berarti menunjukkan paket yang dikirimkan telah sesuai
+
+Kemudian install netcat di Jorge dan Maingate menggunakan command `apt-get install netcat -y`. Kemudian jalankan command `nc -l -p 80` untuk mendengarkan packet dari client.
+
+Lalu install netcat di 2 client yang akan mengirimkan packet, kemudian jalankan command `nc 10.16.4.128 80` untuk mengkoneksikan dengan DNS Server.
+
+Lalu ketik apapun dan enter untuk mengirim paket, maka paket yang dikirimkan akan secara bergantian didistribusikan pada Jorge dan Maingate.
+
+![6-1](img/6-1.jpg)
+
+![6-2](img/6-2.jpg)
