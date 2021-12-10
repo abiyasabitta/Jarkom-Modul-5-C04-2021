@@ -68,8 +68,8 @@ Keterangan:
 
 -j DROP: Paket di-drop
 
-Untuk testing maka dilakukan ping ke doriki atau jipangu melalui 4 node, dan nantinya pada node ke 4 tidak bisa melakukan koneksi ping.
-
+Untuk testing maka dilakukan ping ke doriki atau jipangu melalui 4 node, dan nantinya pada node ke 4 tidak bisa melakukan koneksi ping, dimana pada testing ini node ke 4 yaitu elena tidak dapat melakukan ping ke doriki 
+![3](/img/3.1.png)
 
 ## No 4
 Pada nomor ini diminta untuk node blueno dan chiper hanya bisa mengakses doriki pada pukul 7.00 - 15.00, pada hari Senin hingga Kamis. Maka dari itu digunakan IP TABLES pada doriki seperti berikut
@@ -94,6 +94,10 @@ Keterangan:
 
 Untuk testing yaitu menset waktu pada node terlebih dahulu kemudian dilakukan ping ke doriki
 
+![4.1](/img/4.1.png)
+
+![4.2](/img/4.2.png)
+
 
 ## No 5
 Diminta untuk membatasi akses yang menuju ke Doriki yang berasal dari Elena dan Fukurou agar hanya dapat mengakses pukul 15.01 hingga pukul 06.59 di setiap harinya
@@ -110,7 +114,9 @@ iptables -A INPUT -s 10.16.8.0/24 -j REJECT
 
 Iptables tersebut menerima packet sesuai dengan waktu yang ditentukan soal, dan menolak packet yang diluar jam tersebut
 
-![5](img/5.jpg)
+![5.1](img/5.1.png)
+
+![5.2](/img/5.2.png)
 
 ## No 6
 Diminta untuk menyetting Guanhao agar setiap request dari client yang mengakses DNS Server akan didistribusikan secara bergantian pada Jorge dan Maingate.
