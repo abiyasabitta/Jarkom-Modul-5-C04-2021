@@ -70,17 +70,13 @@ iptables -A INPUT -p icmp -m connlimit --connlimit-above 3 --connlimit-mask 0 -j
 ```
 
 Keterangan:
--A INPUT: Menggunakan chain INPUT
 
--p icmp: Mendefinisikan protokol yang digunakan, yaitu ICMP (ping)
-
--m connlimit: Menggunakan rule connection limit
-
---connlimit-above 3: Limit yang ditangkap paket adalah di atas 3
-
---connlimit-mask 0 : Hanya memperbolehkan 3 koneksi setiap subnet dalam satu waktu
-
--j DROP: Paket di-drop
+* `-A INPUT`: Menggunakan chain INPUT
+* `-p icmp`: Mendefinisikan protokol yang digunakan, yaitu ICMP (ping)
+* `-m connlimit`: Menggunakan rule connection limit
+* `--connlimit-above 3`: Limit yang ditangkap paket adalah di atas 3
+* `--connlimit-mask 0` : Hanya memperbolehkan 3 koneksi setiap subnet dalam satu waktu
+* `-j DROP`: Paket di-drop
 
 Untuk testing maka dilakukan ping ke doriki atau jipangu melalui 4 node, dan nantinya pada node ke 4 tidak bisa melakukan koneksi ping, dimana pada testing ini node ke 4 yaitu elena tidak dapat melakukan ping ke doriki
 ![3](/img/3.1.png)
@@ -99,15 +95,16 @@ iptables -A INPUT -s 10.16.0.0/22 -j REJECT
 ```
 
 Keterangan:
--A INPUT : menggunakan CHAIN INPUT
--s 10.16.4.0 : mendefinisikan alamat asal (BLUENO)
--s 10.16.0.0 : mendefinisikan alamat asal (Chiper)
--m time : menggunakan rule time
---timestart 07:00 : mendefinisikan waktu mulai
---timestop 15:00 : mendefinisikan waktu berhenti
---weekdays Mon,Tue,Wed,Thu : mendefinisikan hari yaitu Senin hingga Kamis
---j ACCEPT : Paket di-Accept
---j Reject : Paket di-Reject
+
+* `-A INPUT` : menggunakan CHAIN INPUT
+* `-s 10.16.4.0` : mendefinisikan alamat asal (BLUENO)
+* `-s 10.16.0.0` : mendefinisikan alamat asal (Chiper)
+* `-m time` : menggunakan rule time
+* `--timestart 07:00` : mendefinisikan waktu mulai
+* `--timestop 15:00` : mendefinisikan waktu berhenti
+* `--weekdays Mon,Tue,Wed,Thu` : mendefinisikan hari yaitu Senin hingga Kamis
+* `--j ACCEPT` : Paket di-Accept
+* `--j Reject` : Paket di-Reject
 
 Untuk testing yaitu menset waktu pada node terlebih dahulu kemudian dilakukan ping ke doriki
 
